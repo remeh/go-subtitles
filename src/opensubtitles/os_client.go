@@ -71,7 +71,7 @@ func (c *OSClient) LogOut() error {
 }
 
 // Looks for a subtitle given the video filename.
-func (c *OSClient) Search(filename string, limit int) error {
+func (c *OSClient) Search(filename string, language string, limit int) error {
 	// Builds the query
 	result := analyzer.AnalyzeFilename(filename)
 
@@ -79,6 +79,7 @@ func (c *OSClient) Search(filename string, limit int) error {
 	filters := make([]map[string]string, 0)
 	filter := make(map[string]string)
 	filter["query"] = result.Name
+    filter["sublanguageid"] = language
 	filters = append(filters, filter)
 
 	// Query options, currently, we just put a limit.
@@ -91,12 +92,20 @@ func (c *OSClient) Search(filename string, limit int) error {
 		return fmt.Errorf("Error code while logging to the OpenSubtitles API : %s\n", err)
 	}
 
-	var logoutResponse model.LogOutResponse
-	resp.Unmarshal(&logoutResponse)
+	var searchResponse model.SearchSubtitlesResponse
+	err = resp.Unmarshal(&searchResponse)
 
-	if logoutResponse.Status != "200 OK" {
-		return fmt.Errorf("Bad status code returned during log out :%s\n", logoutResponse.Status)
+    if err != nil {
+        return err
+    }
+
+	if searchResponse.Status != "200 OK" {
+		return fmt.Errorf("Bad status code returned during search query :%s\n", searchResponse.Status)
 	}
+
+    for _, v := range searchResponse.SubtitleEntries {
+        fmt.Println(v)
+    }
 
 	return nil
 }
@@ -123,8 +132,6 @@ func (c *OSClient) httpCall(method string, parameters ...interface{}) (*xmlrpc.R
 		return nil, err
 	}
 	defer resp.Body.Close()
-
-	fmt.Println(string(data))
 
 	return xmlrpc.NewResponse(data), nil
 }

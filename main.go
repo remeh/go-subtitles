@@ -13,6 +13,9 @@ type Parameters struct {
 	Password  string
 	Language  string
 	UserAgent string
+
+    Filename string
+    SubLanguage string
 }
 
 func main() {
@@ -28,7 +31,11 @@ func main() {
 
 	log.Println("Logged in, received token :", client.Token)
 
-	client.Search("Query search here", 1)
+    log.Println("Searching for :", cliParams.Filename)
+	err = client.Search(cliParams.Filename, cliParams.SubLanguage, 5)
+    if err != nil {
+        log.Fatalf("Error while searching: %s\n",err)
+    }
 
 	/*
 		if client.LogOut() != nil {
@@ -38,16 +45,23 @@ func main() {
 	*/
 }
 
+// Parse the CLI parameters.
 func parseFlags() Parameters {
 	username := flag.String("u", "", "Username on OpenSubtitles.org")
 	password := flag.String("p", "", "Password on OpenSubtitles.org")
 	language := flag.String("l", "en", "Language")
+	subLanguage := flag.String("sl", "eng", "Subtitle language")
 	useragent := flag.String("k", "OSTestUserAgent", "OpenSubtitles Registered User Agent")
+    filename := flag.String("f", "", "Search for the given filename")
+
+    flag.Parse()
 
 	return Parameters{
 		Username:  *username,
 		Password:  *password,
 		Language:  *language,
+        SubLanguage: *subLanguage,
 		UserAgent: *useragent,
+        Filename: *filename,
 	}
 }
