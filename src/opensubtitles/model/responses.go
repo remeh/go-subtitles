@@ -5,7 +5,7 @@
 //
 // Copyright © 2014 - Rémy MATHIEU
 
-package opensubtitles
+package model
 
 type LogInResponse struct {
 	Token   string `xmlrpc:"token"`

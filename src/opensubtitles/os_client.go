@@ -10,6 +10,9 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"analyzer"
+	"opensubtitles/model"
+
 	"github.com/kolo/xmlrpc"
 )
 
@@ -41,7 +44,7 @@ func (c *OSClient) LogIn(username string, password string) error {
 		return fmt.Errorf("Error code while logging to the OpenSubtitles API : %s\n", err)
 	}
 
-	var loginResponse LogInResponse
+	var loginResponse model.LogInResponse
 	resp.Unmarshal(&loginResponse)
 
 	c.Token = loginResponse.Token
@@ -57,7 +60,7 @@ func (c *OSClient) LogOut() error {
 		return fmt.Errorf("Error code while logging to the OpenSubtitles API : %s\n", err)
 	}
 
-	var logoutResponse LogOutResponse
+	var logoutResponse model.LogOutResponse
 	resp.Unmarshal(&logoutResponse)
 
 	if logoutResponse.Status != "200 OK" {
@@ -68,7 +71,35 @@ func (c *OSClient) LogOut() error {
 }
 
 // Looks for a subtitle given the video filename.
-func (c *OSClient) Search(fileName string) {
+func (c *OSClient) Search(filename string) error {
+	// Builds the query
+	result := analyzer.AnalyzeFilename(filename)
+
+	// Builds the query with the analysis result.
+	filters := make([]map[string]string, 0)
+	filter := make(map[string]string)
+	filter["query"] = result.Name
+	filters = append(filters, filter)
+
+	// Query options, currently, we just put a limit.
+	options := make(map[string]int)
+	options["limit"] = 100
+
+	resp, err := c.httpCall("SearchSubtitles", c.Token, filters, options)
+
+	if err != nil {
+		return fmt.Errorf("Error code while logging to the OpenSubtitles API : %s\n", err)
+	}
+
+	println("SEAAAAAAAAAAAAAAAAAAAAAARCh")
+	var logoutResponse model.LogOutResponse
+	resp.Unmarshal(&logoutResponse)
+
+	if logoutResponse.Status != "200 OK" {
+		return fmt.Errorf("Bad status code returned during log out :%s\n", logoutResponse.Status)
+	}
+
+	return nil
 }
 
 // Does the XML-RPC over HTTP call.
@@ -93,6 +124,8 @@ func (c *OSClient) httpCall(method string, parameters ...interface{}) (*xmlrpc.R
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	fmt.Println(string(data))
 
 	return xmlrpc.NewResponse(data), nil
 }
