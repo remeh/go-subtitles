@@ -71,7 +71,7 @@ func (c *OSClient) LogOut() error {
 }
 
 // Looks for a subtitle given the video filename.
-func (c *OSClient) Search(filename string) error {
+func (c *OSClient) Search(filename string, limit int) error {
 	// Builds the query
 	result := analyzer.AnalyzeFilename(filename)
 
@@ -83,7 +83,7 @@ func (c *OSClient) Search(filename string) error {
 
 	// Query options, currently, we just put a limit.
 	options := make(map[string]int)
-	options["limit"] = 100
+	options["limit"] = limit
 
 	resp, err := c.httpCall("SearchSubtitles", c.Token, filters, options)
 
@@ -91,7 +91,6 @@ func (c *OSClient) Search(filename string) error {
 		return fmt.Errorf("Error code while logging to the OpenSubtitles API : %s\n", err)
 	}
 
-	println("SEAAAAAAAAAAAAAAAAAAAAAARCh")
 	var logoutResponse model.LogOutResponse
 	resp.Unmarshal(&logoutResponse)
 
