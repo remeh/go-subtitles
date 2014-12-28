@@ -7,6 +7,8 @@ package opensubtitles
 
 import (
 	"fmt"
+	"io/ioutil"
+	"net/http"
 
 	"github.com/kolo/xmlrpc"
 )
@@ -17,62 +19,80 @@ const (
 
 // A connected client to the OpenSubtitles platform.
 type OSClient struct {
-	Token    string // Identification token
-	Language string // Language given during the opening of the connection
+	Token     string // Identification token
+	UserAgent string // User agent used for identification to OpenSubtitles
+	Language  string // Language given during the opening of the connection
 
-	rpcClient *xmlrpc.Client // The XML-RPC client used.
+	httpClient http.Client // HTTP Client
 }
 
-// Log in to the OpenSubtitles platform.
-func OpenSubtitlesLogIn(username string, password string, language string, userAgent string) (OSClient, error) {
-	rpcClient, err := xmlrpc.NewClient(OPENSUBTITLES_API_URL, nil)
-
-	if err != nil {
-		return OSClient{}, nil
-	}
-
-	osClient := OSClient{
-		rpcClient: rpcClient,
-	}
-
-	// Request parameters
-	loginRequest := LogInRequest{
-		Username:  username,
-		Password:  password,
+func NewOSClient(language string, userAgent string) OSClient {
+	return OSClient{
 		Language:  language,
 		UserAgent: userAgent,
 	}
+}
 
-	// Request response
-	loginResponse := LogInResponse{}
+// Log in to the OpenSubtitles platform.
+func (c *OSClient) LogIn(username string, password string) error {
+	resp, err := c.httpCall("LogIn", username, password, c.Language, c.UserAgent)
 
-	// Let's login and analyze the response.
-	rpcClient.Call("LogIn", loginRequest, &loginResponse)
-
-	if loginResponse.Status != "200 OK" {
-		return osClient, fmt.Errorf("Error code while logging to the OpenSubtitles API : %s\n", loginResponse.Status)
+	if err != nil {
+		return fmt.Errorf("Error code while logging to the OpenSubtitles API : %s\n", err)
 	}
 
-	return osClient, nil
+	var loginResponse LogInResponse
+	resp.Unmarshal(&loginResponse)
+
+	c.Token = loginResponse.Token
+
+	return nil
 }
 
 // Log out an user. Returns whether or not a 200 has been returned.
-func (c *OSClient) LogOut() bool {
-	logoutRequest := LogOutRequest{
-		Token: c.Token,
+func (c *OSClient) LogOut() error {
+	resp, err := c.httpCall("LogOut", c.Token)
+
+	if err != nil {
+		return fmt.Errorf("Error code while logging to the OpenSubtitles API : %s\n", err)
 	}
 
-	logoutResponse := LogOutResponse{}
+	var logoutResponse LogOutResponse
+	resp.Unmarshal(&logoutResponse)
 
-	c.rpcClient.Call("LogOut", logoutRequest, &logoutResponse)
-
-	if logoutResponse.Status == "200 OK" {
-		return true
+	if logoutResponse.Status != "200 OK" {
+		return fmt.Errorf("Bad status code returned during log out :%s\n", logoutResponse.Status)
 	}
 
-	return false
+	return nil
 }
 
 // Looks for a subtitle given the video filename.
 func (c *OSClient) Search(fileName string) {
+}
+
+// Does the XML-RPC over HTTP call.
+func (c *OSClient) httpCall(method string, parameters ...interface{}) (*xmlrpc.Response, error) {
+	request, err := xmlrpc.NewRequest(OPENSUBTITLES_API_URL, method, parameters)
+	request.Header.Set("User-Agent", c.UserAgent)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.httpClient.Do(request)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("Bad HTTP code : %s", resp.Status)
+	}
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return xmlrpc.NewResponse(data), nil
 }
