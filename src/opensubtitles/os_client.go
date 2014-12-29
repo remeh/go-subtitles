@@ -77,8 +77,6 @@ func (c *OSClient) Search(filename string, language string, limit int) error {
 	// Builds the query
 	result := analyzer.AnalyzeFilename(filename)
 
-	log.Println(result)
-
 	// Builds the query with the analysis result.
 	filters := make([]map[string]string, 0)
 	filter := make(map[string]string)
