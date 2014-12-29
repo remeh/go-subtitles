@@ -37,6 +37,8 @@ func LookForSerieInfo(filename string) (int, int) {
 
 // Removes the extension from the file.
 func RemoveExtension(filename string) string {
+	// TODO Try to look if it's a directory, if so,
+	// TODO do not remove any extension.
 	for i := len(filename) - 1; i >= 0 && !os.IsPathSeparator(filename[i]); i-- {
 		if filename[i] == '.' {
 			return filename[:i]

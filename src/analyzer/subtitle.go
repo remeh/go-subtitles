@@ -7,6 +7,7 @@ package analyzer
 import "strings"
 
 // Analyzes the filename to return a analyze result.
+// NOTE Preprocess Blu-ray Bluray -> BDRip
 func CompareFilenameSubtitleName(fileURI string, subtitleURI string) float32 {
 	filename := GetFilename(fileURI)
 	sName := GetFilename(subtitleURI)

@@ -116,6 +116,8 @@ func (c *OSClient) Search(filename string, language string, limit int) error {
 	for _, v := range searchResponse.SubtitleEntries {
 		fmt.Println(v.SubFileName)
 		fmt.Printf("Score : %.2f\n", analyzer.CompareFilenameSubtitleName(result.Name, v.SubFileName))
+		fmt.Println(v.SubDownloadLink)
+		fmt.Println()
 	}
 
 	return nil
