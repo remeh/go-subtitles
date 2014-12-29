@@ -8,7 +8,9 @@ package opensubtitles
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"strconv"
 
 	"analyzer"
 	"opensubtitles/model"
@@ -75,11 +77,21 @@ func (c *OSClient) Search(filename string, language string, limit int) error {
 	// Builds the query
 	result := analyzer.AnalyzeFilename(filename)
 
+	log.Println(result)
+
 	// Builds the query with the analysis result.
 	filters := make([]map[string]string, 0)
 	filter := make(map[string]string)
 	filter["query"] = result.Name
-    filter["sublanguageid"] = language
+	filter["sublanguageid"] = language
+	// If we have some information because it's a serie
+	if result.IsSerie {
+		filter["season"] = strconv.Itoa(result.Season)
+		filter["episode"] = strconv.Itoa(result.Episode)
+	}
+
+	log.Println(filter)
+
 	filters = append(filters, filter)
 
 	// Query options, currently, we just put a limit.
@@ -95,32 +107,46 @@ func (c *OSClient) Search(filename string, language string, limit int) error {
 	var searchResponse model.SearchSubtitlesResponse
 	err = resp.Unmarshal(&searchResponse)
 
-    if err != nil {
-        return err
-    }
+	if err != nil {
+		return err
+	}
 
 	if searchResponse.Status != "200 OK" {
 		return fmt.Errorf("Bad status code returned during search query :%s\n", searchResponse.Status)
 	}
 
-    for _, v := range searchResponse.SubtitleEntries {
-        fmt.Println(v)
-    }
+	for _, v := range searchResponse.SubtitleEntries {
+		fmt.Println(v)
+	}
 
 	return nil
 }
 
 // Does the XML-RPC over HTTP call.
 func (c *OSClient) httpCall(method string, parameters ...interface{}) (*xmlrpc.Response, error) {
-	request, err := xmlrpc.NewRequest(OPENSUBTITLES_API_URL, method, parameters)
-	request.Header.Set("User-Agent", c.UserAgent)
-	if err != nil {
-		return nil, err
-	}
+	// Will do many tries in case of 503
+	triesLeft := 3
 
-	resp, err := c.httpClient.Do(request)
-	if err != nil {
-		return nil, err
+	var resp *http.Response
+
+	for triesLeft > 0 {
+		request, err := xmlrpc.NewRequest(OPENSUBTITLES_API_URL, method, parameters)
+		request.Header.Set("User-Agent", c.UserAgent)
+		if err != nil {
+			return nil, err
+		}
+
+		resp, err = c.httpClient.Do(request)
+		if err != nil {
+			return nil, err
+		}
+
+		if resp.StatusCode != 200 {
+			triesLeft--
+			log.Println("OpenSubtitles unvailable... retrying.")
+		} else {
+			triesLeft = 0 // Succeed, stop here.
+		}
 	}
 
 	if resp.StatusCode != 200 {
