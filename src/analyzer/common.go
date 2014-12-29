@@ -14,7 +14,7 @@ import (
 
 // Reads an absolute uri to a file to returns only the filename.
 func GetFilename(filename string) string {
-	return filepath.Base(filename)
+	return strings.ToUpper(filepath.Base(filename))
 }
 
 // Looks for season / episode information
