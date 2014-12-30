@@ -34,8 +34,11 @@ func main() {
 	log.Println("Searching for :", cliParams.Filename)
 	err = client.Search(cliParams.Filename, cliParams.SubLanguage, 15)
 	if err != nil {
-		log.Fatalf("Error while searching: %s\n", err)
+		log.Println("Error while searching:", err)
 	}
+
+	client.LogOut()
+	log.Println("Logged out.")
 }
 
 // Parse the CLI parameters.

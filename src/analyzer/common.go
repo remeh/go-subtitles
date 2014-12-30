@@ -17,6 +17,20 @@ func GetFilename(filename string) string {
 	return strings.ToUpper(filepath.Base(filename))
 }
 
+// Replaces common words or sysonym for a better matching.
+func ReplaceCommonWords(filename string) string {
+	synonymous := make(map[string]string)
+
+	synonymous["BLU RAY"] = "BDRip"
+	synonymous["BLURAY"] = "BDRip"
+
+	for k, v := range synonymous {
+		filename = strings.Replace(filename, k, v, -1)
+	}
+
+	return filename
+}
+
 // Looks for season / episode information
 func LookForSerieInfo(filename string) (int, int) {
 	r := regexp.MustCompile(SERIE_SEASON_EPISODE_PATTERN)

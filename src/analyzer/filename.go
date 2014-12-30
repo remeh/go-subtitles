@@ -19,6 +19,7 @@ func AnalyzeFilename(filename string) Result {
 	filtered := GetFilename(filename)
 	filtered = RemoveExtension(filtered)
 	filtered = RemoveSpecialChars(filtered)
+	filtered = ReplaceCommonWords(filtered)
 	season, episode := LookForSerieInfo(filtered)
 
 	log.Println("Cleaned name:", filtered)
