@@ -5,7 +5,7 @@
 // Copyright © 2015 - Rémy MATHIEU
 
 // On DOM ready.
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener("DOMContentLoaded", function(){
     "use strict";
     prepareDragSurface();
 });
@@ -50,7 +50,21 @@ function handleDrop(event) {
 }
 
 // findBestSubtitle is calling the API to
-// retrieve the best subtitle for the given filename.
-function findBestSubtitle(filename) {
-    return "Pom pom pom.srt";
+// retrieve the best subtitle for the given filename,
+// the response of the API is handled in readApiResponse.
+function findBestSubtitle(file) {
+    "use strict";
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/api/1.0/get?f="+file.name, true);
+    xhr.send();
+    xhr.onreadystatechange = function (event) { readApiResponse(event, xhr); }
+}
+
+
+
+function readApiResponse(event, xhr) {
+    "use strict";
+    if (xhr.readyState == 4) {
+        // TODO
+    }
 }

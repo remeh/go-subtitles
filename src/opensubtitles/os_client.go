@@ -73,7 +73,8 @@ func (c *OSClient) LogOut() error {
 }
 
 // Looks for a subtitle given the video filename.
-func (c *OSClient) Search(filename string, language string, limit int) error {
+func (c *OSClient) Search(filename string, language string, limit int) (model.SearchSubtitlesResponse, error) {
+	emptyResponse := model.SearchSubtitlesResponse{}
 	// Builds the query
 	result := analyzer.AnalyzeFilename(filename)
 
@@ -97,18 +98,19 @@ func (c *OSClient) Search(filename string, language string, limit int) error {
 	resp, err := c.httpCall("SearchSubtitles", c.Token, filters, options)
 
 	if err != nil {
-		return fmt.Errorf("Error code while logging to the OpenSubtitles API : %s\n", err)
+		return emptyResponse, fmt.Errorf("Error code while logging to the OpenSubtitles API : %s\n", err)
 	}
 
+	// Reads the response
 	var searchResponse model.SearchSubtitlesResponse
 	err = resp.Unmarshal(&searchResponse)
 
 	if err != nil {
-		return err
+		return emptyResponse, err
 	}
 
 	if searchResponse.Status != "200 OK" {
-		return fmt.Errorf("Bad status code returned during search query :%s\n", searchResponse.Status)
+		return emptyResponse, fmt.Errorf("Bad status code returned during search query :%s\n", searchResponse.Status)
 	}
 
 	// Print the results.
@@ -119,7 +121,7 @@ func (c *OSClient) Search(filename string, language string, limit int) error {
 		fmt.Println()
 	}
 
-	return nil
+	return searchResponse, nil
 }
 
 // Does the XML-RPC over HTTP call.

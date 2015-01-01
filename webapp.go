@@ -17,6 +17,7 @@ func main() {
 	app := webapp.NewApp(config)
 
 	app.Router.Handle("/api/1.0/", &api.Index{App: app})
+	app.Router.Handle("/api/1.0/search", &api.Search{App: app})
 
 	closeChannel := make(chan int)
 
