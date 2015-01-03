@@ -1,13 +1,15 @@
 // Search the best subtitle for the given filename.
+// Returns an ordered (better first) list of found subtitles.
 //
 // Copyright © 2015 - Rémy MATHIEU
 
 package api
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
 
+	"service"
 	"webapp"
 )
 
@@ -16,7 +18,7 @@ type Search struct {
 }
 
 type SearchResponse struct {
-	Link string
+	Subtitles []service.Subtitle `json:"subtitles"`
 }
 
 func (h *Search) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -29,8 +31,24 @@ func (h *Search) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(400)
 		return
 	}
+	language := r.Form.Get("l")
+	if len(language) == 0 {
+		language = "eng"
+	}
 
-	// TODO
+	// Retrieve some subtitles
+	subtitles, err := service.Search(filename, language, 100)
 
-	fmt.Fprintf(w, "TODO")
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+
+	response := SearchResponse{
+		Subtitles: subtitles,
+	}
+	json, _ := json.Marshal(response)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(json)
 }

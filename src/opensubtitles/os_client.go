@@ -113,14 +113,6 @@ func (c *OSClient) Search(filename string, language string, limit int) (model.Se
 		return emptyResponse, fmt.Errorf("Bad status code returned during search query :%s\n", searchResponse.Status)
 	}
 
-	// Print the results.
-	for _, v := range searchResponse.SubtitleEntries {
-		fmt.Println(v.SubFileName)
-		fmt.Printf("Score : %.2f\n", analyzer.CompareFilenameSubtitleName(result.Name, v.SubFileName))
-		fmt.Println(v.SubDownloadLink)
-		fmt.Println()
-	}
-
 	return searchResponse, nil
 }
 

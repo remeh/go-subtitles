@@ -32,7 +32,7 @@ func main() {
 	log.Println("Logged in, received token :", client.Token)
 
 	log.Println("Searching for :", cliParams.Filename)
-	err = client.Search(cliParams.Filename, cliParams.SubLanguage, 15)
+	_, err = client.Search(cliParams.Filename, cliParams.SubLanguage, 15)
 	if err != nil {
 		log.Println("Error while searching:", err)
 	}

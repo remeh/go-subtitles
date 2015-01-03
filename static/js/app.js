@@ -55,7 +55,7 @@ function handleDrop(event) {
 function findBestSubtitle(file) {
     "use strict";
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/api/1.0/get?f="+file.name, true);
+    xhr.open("GET", "/api/1.0/search?f="+file.name, true);
     xhr.send();
     xhr.onreadystatechange = function (event) { readApiResponse(event, xhr); }
 }
@@ -65,6 +65,35 @@ function findBestSubtitle(file) {
 function readApiResponse(event, xhr) {
     "use strict";
     if (xhr.readyState == 4) {
-        // TODO
+        try {
+            var subtitles = JSON.parse(xhr.responseText).subtitles;
+            if (subtitles != undefined) {
+                renderResponse(subtitles)
+            }
+        } catch (exception) {
+            // TODO
+            console.error("Parsing error:", exception);
+        }
     }
+}
+
+// Display the given subtitles.
+function renderResponse(subtitles) {
+    var container = document.querySelector("#results_container");
+
+    // Empty the container
+    container.innerHTML = '';
+
+    // No result
+    if (subtitles == null || subtitles.length == 0) {
+        container.innerHTML = '<pre>No results found.</pre>';
+    }
+
+    var content = '<ul>';
+    for (var i = 0; i < subtitles.length; i++) {
+        content +=  '<li><a href="' + subtitles[i].download_link + '">' + subtitles[i].filename + '</a> - Score : ' + subtitles[i].filename_score + '</li>';
+    }
+    content += '</ul>';
+
+    container.innerHTML = content;
 }

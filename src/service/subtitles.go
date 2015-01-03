@@ -12,17 +12,17 @@ import (
 
 // Definition of a subtitle.
 type Subtitle struct {
-	MovieName        string
-	MovieReleaseName string
-	MovieKind        string // episode, movie, ...
-	Language         string
-	Rating           string
-	Filename         string // To compare with the video filename
-	SeriesSeason     string
-	SeriesEpisode    string
-	DownloadLink     string
-	ZipDownloadLink  string
-	FilenameScore    float32 // score computed from the filename
+	MovieName        string  `json:"movie_name"`
+	MovieReleaseName string  `json:"movie_release_name"`
+	MovieKind        string  `json:"movie_kind"` // episode, movie, ...
+	Language         string  `json:"language"`
+	Rating           string  `json:"rating"`
+	Filename         string  `json:"filename"` // To compare with the video filename
+	SeriesSeason     string  `json:"series_season"`
+	SeriesEpisode    string  `json:"series_episode"`
+	DownloadLink     string  `json:"download_link"`
+	ZipDownloadLink  string  `json:"zip_download_link"`
+	FilenameScore    float32 `json:"filename_score"` // score computed from the filename
 }
 
 func (s Subtitle) String() string {

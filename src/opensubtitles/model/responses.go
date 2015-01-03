@@ -7,7 +7,9 @@
 
 package model
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // The log in response with the auth token.
 type LogInResponse struct {
