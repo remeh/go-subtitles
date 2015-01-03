@@ -36,9 +36,12 @@ type SubtitleEntry struct {
 	MovieName        string
 	MovieReleaseName string
 	MovieKind        string // episode, movie, ...
+	MovieByteSize    string // movie size
+	IDMovieImdb      string // ID on IMDB
 	LanguageName     string
+	SubDownloadsCnt  string // How many times the subtitle has been downloaded.
 	SubRating        string
-	SubFileName      string // To compare with the video filename
+	SubFileName      string // to compare with the video filename
 	SeriesSeason     string
 	SeriesEpisode    string
 	SubDownloadLink  string
@@ -47,5 +50,5 @@ type SubtitleEntry struct {
 }
 
 func (e SubtitleEntry) String() string {
-	return fmt.Sprintf("SubtitleEntry: MovieName[%s] MovieReleaseName[%s] MovieKind[%s] LanguageName[%s] SubFileName[%s] SubRating[%s] SeriesSeason[%s] SeriesEpisode[%s] SubDownloadLink[%s] ZipDownloadLink[%s] SubtitlesLink[%s]\n", e.MovieName, e.MovieReleaseName, e.MovieKind, e.LanguageName, e.SubFileName, e.SubRating, e.SeriesSeason, e.SeriesEpisode, e.SubDownloadLink, e.ZipDownloadLink, e.SubtitlesLink)
+	return fmt.Sprintf("SubtitleEntry: MovieName[%s] MovieReleaseName[%s] MovieKind[%s] MovieByteSize[%s] IDMovieImdb[%s] LanguageName[%s] SubDownloadsCnt[%s] SubFileName[%s] SubRating[%s] SeriesSeason[%s] SeriesEpisode[%s] SubDownloadLink[%s] ZipDownloadLink[%s] SubtitlesLink[%s]\n", e.MovieName, e.MovieReleaseName, e.MovieKind, e.MovieByteSize, e.IDMovieImdb, e.LanguageName, e.SubDownloadsCnt, e.SubFileName, e.SubRating, e.SeriesSeason, e.SeriesEpisode, e.SubDownloadLink, e.ZipDownloadLink, e.SubtitlesLink)
 }

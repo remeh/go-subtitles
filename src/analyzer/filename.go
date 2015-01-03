@@ -22,8 +22,6 @@ func AnalyzeFilename(filename string) Result {
 	filtered = ReplaceCommonWords(filtered)
 	season, episode := LookForSerieInfo(filtered)
 
-	log.Println("Cleaned name:", filtered)
-
 	isSerie := (season != 0 && episode != 0)
 
 	return Result{

@@ -6,6 +6,7 @@ package service
 
 import (
 	"fmt"
+	"strconv"
 
 	"opensubtitles/model"
 )
@@ -20,6 +21,7 @@ type Subtitle struct {
 	Filename         string  `json:"filename"` // To compare with the video filename
 	SeriesSeason     string  `json:"series_season"`
 	SeriesEpisode    string  `json:"series_episode"`
+	DownloadCount    int     `json:"download_count"`
 	DownloadLink     string  `json:"download_link"`
 	ZipDownloadLink  string  `json:"zip_download_link"`
 	FilenameScore    float32 `json:"filename_score"` // score computed from the filename
@@ -31,6 +33,10 @@ func (s Subtitle) String() string {
 
 // Converts the OS subtitle entry to a common Subtitle.
 func FromOSEntry(e model.SubtitleEntry) Subtitle {
+	downloadCount, err := strconv.Atoi(e.SubDownloadsCnt)
+	if err != nil {
+		downloadCount = 0
+	}
 	return Subtitle{
 		MovieName:        e.MovieName,
 		MovieReleaseName: e.MovieReleaseName,
@@ -40,6 +46,7 @@ func FromOSEntry(e model.SubtitleEntry) Subtitle {
 		Filename:         e.SubFileName,
 		SeriesSeason:     e.SeriesSeason,
 		SeriesEpisode:    e.SeriesEpisode,
+		DownloadCount:    downloadCount,
 		DownloadLink:     e.SubDownloadLink,
 		ZipDownloadLink:  e.ZipDownloadLink,
 	}
