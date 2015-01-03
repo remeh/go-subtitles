@@ -60,8 +60,7 @@ function findBestSubtitle(file) {
     xhr.onreadystatechange = function (event) { readApiResponse(event, xhr); }
 }
 
-
-
+// Reads the API response of a search request.
 function readApiResponse(event, xhr) {
     "use strict";
     if (xhr.readyState == 4) {
@@ -88,12 +87,20 @@ function renderResponse(subtitles) {
     if (subtitles == null || subtitles.length == 0) {
         container.innerHTML = '<pre>No results found.</pre>';
     }
+    
+    // gets the template
+    var template = document.querySelector("#subtitle_template").innerHTML;
 
-    var content = '<ul>';
+    var content = '';
+    // Applies the template on each result.
     for (var i = 0; i < subtitles.length; i++) {
-        content +=  '<li><a href="' + subtitles[i].download_link + '">' + subtitles[i].filename + '</a> - Score : ' + subtitles[i].filename_score + '</li>';
+        var compiled_html = _.template(template)({
+            url: subtitles[i].download_link,
+            name: subtitles[i].filename,
+            filename_score: subtitles[i].filename_score
+        });
+        content += compiled_html; 
     }
-    content += '</ul>';
 
     container.innerHTML = content;
 }
