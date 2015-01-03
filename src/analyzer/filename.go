@@ -6,9 +6,7 @@
 
 package analyzer
 
-import (
-	"log"
-)
+import ()
 
 const (
 	SERIE_SEASON_EPISODE_PATTERN = "S([0-9]{1,2})E([0-9]{1,2})"

@@ -5,6 +5,7 @@
         <!-- Dependency -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/app.css">
 
         <!-- Go subtitles files. -->
         <script src="js/app.js"></script>
@@ -13,18 +14,47 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
         <!-- template -->
+        <script type="text/html" id="metadata_template">
+            <div class="metadata_container">
+                <div class="row">
+                    <div class="col-md-8">
+                    </div>
+                    <div class="col-md-4">
+                        <img src="${image}"/>
+                    </div>
+                </div>
+            </div>
+        </script>
         <script type="text/html" id="subtitle_template">
-            <li><a href="${url}"> ${name} - ${filename_score}</a></li>
+            <div class="subtitle_result_container">
+                <div class="subtitle_result row">
+                    <div class="col-md-8">
+                         ${name}
+                    </div>
+                    <div class="col-md-2">
+                        <span class="filename_score">Score: </span>
+                        <span>${filename_score}</span>
+                    </div>
+                    <div class="col-md2">
+                        <a href="${url}">
+                            <button type="button" class="btn btn-success">Download</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </script>
                                                                     
     </head>
     <body>
-        <div class="container">
+        <div class="header container">
             <h1>Go Subtitles</h1> 
         </div>
 
         <div class="container" draggable="true" id="drag_surface">
-            <p>Drop the file here.</p>
+            <span id="drag_text">Drop the file here.</span>
+        </div>
+
+        <div id="metadata_container">
         </div>
 
         <div class="container" id="results_container">

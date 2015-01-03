@@ -19,6 +19,7 @@ type Search struct {
 
 type SearchResponse struct {
 	Subtitles []service.Subtitle `json:"subtitles"`
+	Metadata  service.Metadata   `json:"metadata"`
 }
 
 func (h *Search) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +38,7 @@ func (h *Search) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Retrieve some subtitles
-	subtitles, err := service.Search(filename, language, 100)
+	subtitles, metadata, err := service.Search(h.App.Config, filename, language, 100)
 
 	if err != nil {
 		w.WriteHeader(400)
@@ -46,6 +47,7 @@ func (h *Search) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	response := SearchResponse{
 		Subtitles: subtitles,
+		Metadata:  metadata,
 	}
 	json, _ := json.Marshal(response)
 

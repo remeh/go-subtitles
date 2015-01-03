@@ -37,6 +37,9 @@ function handleDragEnter(event) {
 function handleDrop(event) {
     event.preventDefault(); // We don't want the browser to load the file.
 
+    // replace the content of the dropdown surface.
+    document.querySelector("#drag_text").innerHTML = 'Looking for the best subtitles...';
+
     var dt    = event.dataTransfer;
     var files = dt.files;
 
@@ -65,9 +68,9 @@ function readApiResponse(event, xhr) {
     "use strict";
     if (xhr.readyState == 4) {
         try {
-            var subtitles = JSON.parse(xhr.responseText).subtitles;
-            if (subtitles != undefined) {
-                renderResponse(subtitles)
+            var resp = JSON.parse(xhr.responseText)
+            if (resp.subtitles != undefined) {
+                renderResponse(resp.subtitles, resp.metadata);
             }
         } catch (exception) {
             // TODO
@@ -77,11 +80,16 @@ function readApiResponse(event, xhr) {
 }
 
 // Display the given subtitles.
-function renderResponse(subtitles) {
+function renderResponse(subtitles, metadata) {
+    // First, hide the dropdown surface.
+    document.querySelector("#drag_surface").style.display = 'none'; 
+
     var container = document.querySelector("#results_container");
+    var metadataContainer = document.querySelector("#metadata_container");
 
     // Empty the container
     container.innerHTML = '';
+    metadataContainer.innerHTML = '';
 
     // No result
     if (subtitles == null || subtitles.length == 0) {
@@ -101,6 +109,15 @@ function renderResponse(subtitles) {
         });
         content += compiled_html; 
     }
-
     container.innerHTML = content;
+
+    // metadata
+    if (metadata != null) {
+        var mTemplate = document.querySelector("#metadata_template").innerHTML;
+        console.log(metadata);
+        var metadataContent = _.template(mTemplate)({
+            image: metadata.image
+        });
+        metadataContainer.innerHTML = metadataContent;
+    }
 }

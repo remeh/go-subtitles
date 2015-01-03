@@ -5,22 +5,25 @@ import (
 	"sort"
 
 	"analyzer"
+	"omdb"
 	"opensubtitles"
+	"webapp"
 )
 
 // TODO comment
 // TODO language conversion
 // TODO
-func Search(filename string, language string, limit int) ([]Subtitle, error) {
+func Search(config webapp.Config, filename string, language string, limit int) ([]Subtitle, Metadata, error) {
 	subtitles := make([]Subtitle, 0)
+	metadata := Metadata{}
 
 	// Opens a client
-	client := opensubtitles.NewOSClient("eng", "OSTestUserAgent")
-	err := client.LogIn("", "")
+	client := opensubtitles.NewOSClient(language, config.UserAgent)
+	err := client.LogIn(config.Username, config.Password)
 
 	if err != nil {
 		log.Fatalf("Unable to connect to OpenSubtitles :\n%s\n", err)
-		return subtitles, err
+		return subtitles, metadata, err
 	}
 
 	log.Println("Logged in, received token :", client.Token)
@@ -30,7 +33,7 @@ func Search(filename string, language string, limit int) ([]Subtitle, error) {
 
 	if err != nil {
 		log.Println("Error while searching:", err)
-		return subtitles, err
+		return subtitles, metadata, err
 	}
 
 	// logout
@@ -42,12 +45,22 @@ func Search(filename string, language string, limit int) ([]Subtitle, error) {
 		sub := FromOSEntry(v)
 		// compute score from filename
 		sub.FilenameScore = analyzer.CompareFilenameSubtitleName(filename, sub.Filename)
-		// append to the list
-		subtitles = append(subtitles, sub)
+
+		// append to the list but eliminate entries with -1 as filename score.
+		if sub.FilenameScore > -1.0 {
+			subtitles = append(subtitles, sub)
+		}
+	}
+
+	// Metadata
+	omdbClient := omdb.OMDBClient{}
+	omdbResponse, err := omdbClient.Search(subtitles[0].IMDBId, "")
+	if err == nil {
+		metadata = FromOMDB(omdbResponse)
 	}
 
 	// Sort by Rating
 	sort.Sort(Subtitles(subtitles))
 
-	return subtitles, nil
+	return subtitles, metadata, nil
 }

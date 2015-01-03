@@ -1,0 +1,40 @@
+div.header {
+    padding: 1em;
+}
+
+div.header h1 {
+    letter-spacing: 5px;
+    font-size: 4em;
+    font-weight: bold;
+    text-align: center;
+}
+
+div.subtitle_result_container {
+    margin-top: 1em;
+}
+
+div.subtitle_result {
+    padding: 1em;
+    text-align: center;
+}
+
+div.subtitle_result:hover {
+    background-color: #f5f5f5;
+}
+
+span.filename_score {
+    font-weight: bold;
+}
+
+div#drag_surface {
+    padding: 2em;
+    border: 1px dashed #dadada;
+    text-align: center;
+}
+
+span#drag_text {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #ccc;
+}
+

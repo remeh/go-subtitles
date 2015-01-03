@@ -12,4 +12,9 @@ const (
 type Config struct {
 	Addr            string // The addres to listen to
 	StaticDirectory string // Directory containing the static files
+
+	Username  string
+	Password  string
+	Language  string
+	UserAgent string
 }

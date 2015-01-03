@@ -1,0 +1,52 @@
+// Containers.
+//
+// Copyright © 2015 - Rémy MATHIEU
+
+package service
+
+import (
+	"fmt"
+	"strconv"
+
+	"omdb"
+)
+
+type Metadata struct {
+	Title      string
+	Year       string
+	Type       string
+	Rated      string
+	Released   string
+	Runtime    string
+	Genre      string
+	Director   string
+	Writer     string
+	Actors     string
+	Plot       string
+	Language   string
+	Country    string
+	Image      string
+	IMDBRating string `json:"imdbRating"`
+	IMDBId     string `json:"imdbID`
+}
+
+func FromOMDB(response omdb.OMDBResponse) Metadata {
+	return Metadata{
+		Title: response.Title,
+		Year: response.Year,
+		Type: response.Type,
+		Rated: response.Rated,
+		Released: response.Released,
+		Runtime: response.Runtime,
+		Genre: response.Genre,
+		Director: response.Director,
+		Writer: response.Writer,
+		Actors: response.Actors,
+		Plot: response.Plot,
+		Language: response.Language,
+		Country: response.Country,
+		Image: response.Poster,
+		IMDBRating: response.IMDBRating,
+		IMDBId: response.IMDBId,
+	}
+}

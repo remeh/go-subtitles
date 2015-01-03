@@ -25,6 +25,7 @@ type Subtitle struct {
 	DownloadLink     string  `json:"download_link"`
 	ZipDownloadLink  string  `json:"zip_download_link"`
 	FilenameScore    float32 `json:"filename_score"` // score computed from the filename
+	IMDBId           string  `json:"omit"`
 }
 
 func (s Subtitle) String() string {
@@ -49,6 +50,7 @@ func FromOSEntry(e model.SubtitleEntry) Subtitle {
 		DownloadCount:    downloadCount,
 		DownloadLink:     e.SubDownloadLink,
 		ZipDownloadLink:  e.ZipDownloadLink,
+		IMDBId:           e.IDMovieImdb,
 	}
 }
 

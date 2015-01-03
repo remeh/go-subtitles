@@ -26,12 +26,25 @@ func main() {
 }
 
 func readFlags() webapp.Config {
-	var addr = flag.String("addr", ":9000", "Address to listen to.")
-	var static = flag.String("dir", "static/", "The directory containing the static files to serve.")
+	// Search config
+	username := flag.String("u", "", "Username on OpenSubtitles.org")
+	password := flag.String("p", "", "Password on OpenSubtitles.org")
+	language := flag.String("l", "en", "Language")
+	useragent := flag.String("k", "OSTestUserAgent", "OpenSubtitles Registered User Agent")
+
+	// Webapp config
+	addr := flag.String("addr", ":9000", "Address to listen to.")
+	static := flag.String("dir", "static/", "The directory containing the static files to serve.")
+
 	flag.Parse()
 
 	return webapp.Config{
 		Addr:            *addr,
 		StaticDirectory: *static,
+
+		Username:  *username,
+		Password:  *password,
+		Language:  *language,
+		UserAgent: *useragent,
 	}
 }
