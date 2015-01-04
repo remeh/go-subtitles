@@ -159,8 +159,6 @@ func (c *OSClient) httpCall(method string, parameters ...interface{}) (*xmlrpc.R
 	}
 	defer resp.Body.Close()
 
-	fmt.Println(string(data))
-
 	return xmlrpc.NewResponse(data), nil
 }
 
