@@ -44,8 +44,10 @@ type OMDBResponse struct {
 func (c OMDBClient) Search(imdbId string, movieType string) (OMDBResponse, error) {
 	omdbResponse := OMDBResponse{}
 
+	println(imdbId)
+
 	// Creates the request
-	url := OMDBAPI_URL + "?i=tt" + imdbId
+	url := OMDBAPI_URL + "?i=" + imdbId
 
 	// TODO adds movie type
 

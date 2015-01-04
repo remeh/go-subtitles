@@ -113,6 +113,12 @@ func (c *OSClient) Search(filename string, language string, limit int) (model.Se
 		return emptyResponse, fmt.Errorf("Bad status code returned during search query :%s\n", searchResponse.Status)
 	}
 
+	// Fill with 0 for the imdb ID.
+	for i := 0; i < len(searchResponse.SubtitleEntries); i++ {
+		entry := &searchResponse.SubtitleEntries[i]
+		entry.IDMovieImdb = reformatIMDBId((*entry).IDMovieImdb)
+	}
+
 	return searchResponse, nil
 }
 
@@ -153,5 +159,21 @@ func (c *OSClient) httpCall(method string, parameters ...interface{}) (*xmlrpc.R
 	}
 	defer resp.Body.Close()
 
+	fmt.Println(string(data))
+
 	return xmlrpc.NewResponse(data), nil
+}
+
+// An ID of IMDB is :
+// ttXXXXXXX
+// But from OS we receive XXXX where the number
+// is variable and tt isn't present.
+// Reformat the value.
+func reformatIMDBId(id string) string {
+	// We use the %d formater to add the missing 0s
+	intValue, err := strconv.Atoi(id)
+	if err != nil {
+		return id
+	}
+	return fmt.Sprintf("tt%07d", intValue)
 }
