@@ -67,6 +67,11 @@ function findBestSubtitle(file) {
 function readApiResponse(event, xhr) {
     "use strict";
     if (xhr.readyState == 4) {
+        // Error
+        if (xhr.status != 200) {
+            document.querySelector("#drag_text").innerHTML = "Error with this movie.<br/>Guess you'll watching something else, try another one.";
+        }
+
         try {
             var resp = JSON.parse(xhr.responseText)
             if (resp.subtitles != undefined) {
@@ -116,6 +121,13 @@ function renderResponse(subtitles, metadata) {
         var mTemplate = document.querySelector("#metadata_template").innerHTML;
         console.log(metadata);
         var metadataContent = _.template(mTemplate)({
+            title: metadata.title,
+            genre: metadata.genre,
+            director: metadata.director,
+            actors: metadata.actors,
+            writer: metadata.writer,
+            year: metadata.year,
+            plot: metadata.plot,
             image: metadata.image
         });
         metadataContainer.innerHTML = metadataContent;

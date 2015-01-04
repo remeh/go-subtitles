@@ -32,9 +32,36 @@ div#drag_surface {
     text-align: center;
 }
 
+div#cover_container {
+    text-align: right;
+}
+
 span#drag_text {
     font-size: 2.5em;
     font-weight: bold;
     color: #ccc;
 }
 
+span#movie_title {
+    font-size: 3em;
+    letter-spacing: 5px;
+}
+
+span#movie_year {
+    padding-left: 1em;
+    font-size: 2em;
+    font-weight: bold;
+    color: #ccc;
+}
+
+span#movie_genre {
+    padding-left: 1em;
+    font-size: 2em;
+    color: #aaa;
+}
+
+img#cover {
+    height: 300px;
+}
+
+ 

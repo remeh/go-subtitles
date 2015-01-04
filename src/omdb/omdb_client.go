@@ -47,7 +47,7 @@ func (c OMDBClient) Search(imdbId string, movieType string) (OMDBResponse, error
 	println(imdbId)
 
 	// Creates the request
-	url := OMDBAPI_URL + "?i=" + imdbId
+	url := OMDBAPI_URL + "?plot=full&i=" + imdbId
 
 	// TODO adds movie type
 

@@ -17,10 +17,17 @@
         <script type="text/html" id="metadata_template">
             <div class="metadata_container">
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-9">
+                        <span id="movie_title">${title}</span><span id="movie_genre">${genre}</span><span id="movie_year">${year}</span>
+                        <p id="movie_plot">
+                            ${plot}
+                        </p>
+                        <span id="director"><strong>Director</strong> ${director}</span><br/>
+                        <span id="writer"><strong>Writer</strong> ${writer}</span><br/>
+                        <span id="actors"><strong>Actors</strong> ${actors}</span>
                     </div>
-                    <div class="col-md-4">
-                        <img src="${image}"/>
+                    <div id="cover_container" class="col-md-3">
+                        <img id="cover" src="${image}"/>
                     </div>
                 </div>
             </div>
@@ -54,7 +61,7 @@
             <span id="drag_text">Drop the file here.</span>
         </div>
 
-        <div id="metadata_container">
+        <div id="metadata_container" class="container">
         </div>
 
         <div class="container" id="results_container">
