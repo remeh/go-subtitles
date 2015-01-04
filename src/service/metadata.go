@@ -5,6 +5,9 @@
 package service
 
 import (
+	"encoding/base64"
+	"io/ioutil"
+	"net/http"
 	"omdb"
 )
 
@@ -28,6 +31,19 @@ type Metadata struct {
 }
 
 func FromOMDB(response omdb.OMDBResponse) Metadata {
+	// We must internally resolve the img because imdb
+	// doesn't allows external referer
+	resp, err := http.Get(response.Poster)
+	image := ""
+	if err == nil {
+		defer resp.Body.Close()
+		data, err := ioutil.ReadAll(resp.Body)
+		if err == nil {
+			contentType := resp.Header.Get("Content-Type")
+			image = "data:" + contentType + ";base64," + base64.StdEncoding.EncodeToString(data)
+		}
+	}
+
 	return Metadata{
 		Title:      response.Title,
 		Year:       response.Year,
@@ -40,9 +56,9 @@ func FromOMDB(response omdb.OMDBResponse) Metadata {
 		Writer:     response.Writer,
 		Actors:     response.Actors,
 		Plot:       response.Plot,
+		Image:      image,
 		Language:   response.Language,
 		Country:    response.Country,
-		Image:      response.Poster,
 		IMDBRating: response.IMDBRating,
 		IMDBId:     response.IMDBId,
 	}

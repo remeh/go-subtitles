@@ -128,8 +128,16 @@ function renderResponse(subtitles, metadata) {
             writer: metadata.writer,
             year: metadata.year,
             plot: metadata.plot,
-            image: metadata.image
+            image: metadata.image,
+            runtime: metadata.runtime
         });
         metadataContainer.innerHTML = metadataContent;
     }
+
+    // attach the on click event on the more info button
+    moreInfoButton = document.querySelector("#more_info");
+    moreInfoButton.onclick = function() {
+        document.querySelector("#extra").style.display = ''; // show the info
+        moreInfoButton.style.display = 'none'; // hide the button
+    }.bind(moreInfoButton);
 }

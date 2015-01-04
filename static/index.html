@@ -22,9 +22,13 @@
                         <p id="movie_plot">
                             ${plot}
                         </p>
-                        <span id="director"><strong>Director</strong> ${director}</span><br/>
-                        <span id="writer"><strong>Writer</strong> ${writer}</span><br/>
-                        <span id="actors"><strong>Actors</strong> ${actors}</span>
+                        <button class="btn btn-link" id="more_info">More info</button>
+                        <div id="extra" style="display: none">
+                            <span id="director"><span class="extra-type">Director</span> ${director}</span><br/>
+                            <span id="writer"><span class="extra-type">Writer</span> ${writer}</span><br/>
+                            <span id="actors"><span class="extra-type">Actors</span> ${actors}</span><br/>
+                            <span id="runtime"><span class="extra-type">Runtime</span> ${runtime}</span>
+                        </div>
                     </div>
                     <div id="cover_container" class="col-md-3">
                         <img id="cover" src="${image}"/>

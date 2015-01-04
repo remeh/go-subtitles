@@ -64,4 +64,12 @@ img#cover {
     height: 300px;
 }
 
- 
+div#extra {
+    padding: 2em;
+}
+
+span.extra-type {
+    font-size: 1.1em;
+    font-weight: bold;
+    padding-right:0.5em;
+}
